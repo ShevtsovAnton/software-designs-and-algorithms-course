@@ -1,3 +1,56 @@
 import { Shape } from './Shape';
+import { Point } from './Point';
 
-export class Triangle extends Shape {}
+export class Triangle extends Shape {
+  constructor(point1: Point, point2: Point, point3: Point);
+  constructor(
+    point1: Point,
+    point2: Point,
+    point3: Point,
+    color: string,
+    filled: boolean
+  );
+  constructor(
+    point1: Point,
+    point2: Point,
+    point3: Point,
+    color?: string,
+    filled?: boolean
+  ) {
+    if (typeof color === 'string' && typeof filled === 'boolean') {
+      super([point1, point2, point3], color, filled);
+    } else {
+      super([point1, point2, point3]);
+    }
+  }
+
+  toString() {
+    return `Triangle[${this.points
+      .map((point, index) => `v${index + 1}=${point.toString()}`)
+      .join(',')}]`;
+  }
+
+  getType(): string {
+    const distances = this.points.map((point, index, points) => {
+      let distance: number;
+      if (index === 0) {
+        distance = point.distance(points[points.length - 1]);
+      } else {
+        distance = point.distance(points[index - 1]);
+      }
+      return parseFloat(distance.toFixed(2));
+    });
+
+    const equalSides = distances.filter(
+      (distance) => Math.abs(distance - distances[0]) === 0
+    ).length;
+
+    if (equalSides === 3) {
+      return 'equilateral triangle';
+    } else if (equalSides === 2) {
+      return 'isosceles triangle';
+    } else {
+      return 'scalene triangle';
+    }
+  }
+}
