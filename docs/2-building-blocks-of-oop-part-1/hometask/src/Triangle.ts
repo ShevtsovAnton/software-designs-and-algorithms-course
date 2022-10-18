@@ -31,15 +31,7 @@ export class Triangle extends Shape {
   }
 
   getType(): string {
-    const distances = this.points.map((point, index, points) => {
-      let distance: number;
-      if (index === 0) {
-        distance = point.distance(points[points.length - 1]);
-      } else {
-        distance = point.distance(points[index - 1]);
-      }
-      return parseFloat(distance.toFixed(2));
-    });
+    const distances: number[] = this.getDistances();
 
     const equalSides = distances.filter(
       (distance) => Math.abs(distance - distances[0]) === 0

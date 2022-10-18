@@ -15,11 +15,10 @@ export abstract class Shape {
   ) {
     if (points.length < 3) {
       throw new Error('At least 3 points are required.');
-    } else {
-      this.points = points;
-      this.color = color;
-      this.filled = filled;
     }
+    this.points = points;
+    this.color = color;
+    this.filled = filled;
   }
 
   toString(): string {
@@ -28,7 +27,7 @@ export abstract class Shape {
     } filled. Points: ${this.points.join(', ')}.`;
   }
 
-  getPerimeter(): number {
+  getDistances(): number[] {
     const distances = this.points.map((point, index, points) => {
       let distance: number;
       if (index === 0) {
@@ -36,8 +35,14 @@ export abstract class Shape {
       } else {
         distance = point.distance(points[index - 1]);
       }
-      return parseFloat(distance.toFixed(2));
+      return distance;
     });
+
+    return distances;
+  }
+
+  getPerimeter(): number {
+    const distances = this.getDistances();
 
     return distances.reduce((prev, curr) => prev + curr);
   }
