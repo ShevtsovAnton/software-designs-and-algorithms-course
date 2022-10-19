@@ -22,22 +22,16 @@ export abstract class Item implements Comparable<Item> {
   public compareTo(other: Item): number {
     if (this.getValue() > other.getValue()) {
       return 1;
-    }
-    if (this.getValue() < other.getValue()) {
+    } else if (this.getValue() < other.getValue()) {
       return -1;
-    }
-    if (this.getValue() === other.getValue()) {
+    } else {
       const name = this.getName().toLowerCase();
       const otherName = other.getName().toLowerCase();
       if (name > otherName) {
         return 1;
-      }
-
-      if (name < otherName) {
+      } else if (name < otherName) {
         return -1;
-      }
-
-      if (name === otherName) {
+      } else {
         return 0;
       }
     }

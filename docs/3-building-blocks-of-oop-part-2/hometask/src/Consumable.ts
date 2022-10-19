@@ -6,22 +6,22 @@ export abstract class Consumable extends Item {
 
   constructor(name: string, value: number, weight: number, spoiled?: boolean) {
     super(name, value, weight);
-
-    this.consumed = this.consumed;
     this.spoiled = spoiled ?? false;
+    this.consumed = false;
   }
 
   public use(): string {
     if (!this.consumed && !this.spoiled) {
       return this.eat();
     }
+    return '';
   }
 
   public eat(): string {
-    if (this.isConsumed) {
+    if (this.isConsumed()) {
       return `There is nothing left of the ${this.getName()} to consume.`;
     }
-    this.consumed = true;
+    this.setConsumed(true);
     return `You eat the ${this.getName}.${
       this.spoiled ? ' You feel sick.' : ''
     }`;
