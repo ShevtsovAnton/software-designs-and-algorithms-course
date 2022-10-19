@@ -1,21 +1,23 @@
-export abstract class Consumable implements Item {
+import { Item } from './Item';
+
+export abstract class Consumable extends Item {
   private consumed: boolean;
   private spoiled: boolean;
 
   constructor(name: string, value: number, weight: number, spoiled?: boolean) {
     super(name, value, weight);
 
-    this.consumed = consumed;
+    this.consumed = this.consumed;
     this.spoiled = spoiled ?? false;
   }
 
-  public use(): void {
+  public use(): string {
     if (!this.consumed && !this.spoiled) {
       return this.eat();
     }
   }
 
-  public eat(): void {
+  public eat(): string {
     if (this.isConsumed) {
       return `There is nothing left of the ${this.getName()} to consume.`;
     }

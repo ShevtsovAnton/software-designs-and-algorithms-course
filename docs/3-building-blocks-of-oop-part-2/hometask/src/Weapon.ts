@@ -1,5 +1,6 @@
-export abstract class Weapon implements Item {
-  private MODIFIER_CHANGE_RATE: number = 0.05;
+import { Item } from './Item';
+export abstract class Weapon extends Item {
+  protected MODIFIER_CHANGE_RATE: number = 0.05;
   private baseDamage: number;
   private damageModifier: number;
   private baseDurability: number;
@@ -19,13 +20,13 @@ export abstract class Weapon implements Item {
     this.baseDurability = baseDurability;
     this.durabilityModifier = 0.05;
   }
-  public polish(): void;
+  public polish(): void {}
 
   public use(): string {
     if (this.getDurability() <= 0) {
       return `You can't use the ${this.getName()}, it is broken.`;
     }
-    this.durabilityModifier -= Weapon.MODIFIER_CHANGE_RATE;
+    this.durabilityModifier -= this.MODIFIER_CHANGE_RATE;
 
     return `You use the ${this.getName()}, dealing ${this.getDamage()} points of damage.${
       this.getDurability() <= 0 ? ` The ${this.getName()} breaks.` : ''

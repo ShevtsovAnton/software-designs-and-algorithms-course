@@ -14,8 +14,7 @@ export class Sword extends Weapon {
     const damageModifier = this.getDamageModifier();
 
     if (damageModifier < damageLimit) {
-      const damageModifierIncrease =
-        damageModifier + Weapon.MODIFIER_CHANGE_RATE;
+      const damageModifierIncrease = damageModifier + this.MODIFIER_CHANGE_RATE;
       this.setDamageModifier(
         damageModifierIncrease <= damageLimit
           ? damageModifierIncrease

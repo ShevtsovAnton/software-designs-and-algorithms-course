@@ -10,19 +10,20 @@ export class Inventory {
 
   public addItem(item: Item): void {
     this.items.push(item);
-  };
+  }
 
   sort(): void;
   sort(comparator: ItemWeightComparator): void;
 
   public sort(comparator?: ItemWeightComparator): void {
     if (typeof comparator === 'undefined') {
-        this.items.sort((a, b) => a.getValue() - b.getValue())
+      this.items.sort((a, b) => a.getValue() - b.getValue());
     } else {
-        this.items.sort((a, b) => comparator.compare(a, b));
+      this.items.sort((a, b) => comparator.compare(a, b));
     }
-  };
+  }
 
-  public toString(): string {}
+  public toString(): string {
     return this.items.join(', ');
+  }
 }

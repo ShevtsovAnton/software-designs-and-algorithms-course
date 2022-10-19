@@ -59,7 +59,7 @@ export abstract class Item implements Comparable<Item> {
     return this.name;
   }
 
-  public getWeight(): string {
+  public getWeight(): number {
     return this.weight;
   }
 
