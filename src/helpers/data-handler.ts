@@ -37,11 +37,17 @@ export const dataHandler = (store: Store) =>
         let updatedRows = [...rows];
 
         if (store.filters.length > 0) {
-            updatedRows = filterData(store.filters, updatedRows);
+            updatedRows = filterData(store.filters, rows);
         }
 
         if (store.search) {
-            updatedRows = searchData(store.search, updatedRows);
+            let searchResults = searchData(store.search, rows);
+            if (store.filters.length > 0) {
+                const usernames = new Set(updatedRows.map(row => row.username));
+                updatedRows = [...updatedRows, ...searchResults.filter(result => !usernames.has(result.username))]
+            } else {
+                updatedRows = [...searchResults];
+            }
         }
 
         if (store.sort) {
