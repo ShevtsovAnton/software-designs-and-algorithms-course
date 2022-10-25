@@ -28,38 +28,38 @@ export const Table: FC<TableProps> = ({ rows }) => {
           <TableHead>
             <TableRow>
               <TableCell className={styles.bold}>Avatar</TableCell>
-              <TableCell className={styles.bold} align="left">
+              <TableCell className={styles.bold} align='left'>
                 Username
               </TableCell>
-              <TableCell className={styles.bold} align="left">
+              <TableCell className={styles.bold} align='left'>
                 Country
               </TableCell>
-              <TableCell className={styles.bold} align="left">
+              <TableCell className={styles.bold} align='left'>
                 Name
               </TableCell>
-              <TableCell className={styles.bold} align="left">
+              <TableCell className={styles.bold} align='left'>
                 Last Payments
               </TableCell>
-              <TableCell className={styles.bold} align="left">
+              <TableCell className={styles.bold} align='left'>
                 Posts
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map(row => (
+            {rows.map((row) => (
               <TableRow key={row.name}>
-                <TableCell align="left">
+                <TableCell align='left'>
                   <img
                     className={styles.avatar}
                     src={row.avatar}
-                    alt="avatar"
+                    alt='avatar'
                   />
                 </TableCell>
-                <TableCell align="left">{row.username}</TableCell>
-                <TableCell align="left">{row.country}</TableCell>
-                <TableCell align="left">{row.name}</TableCell>
-                <TableCell align="left">{row.lastPayments}</TableCell>
-                <TableCell align="left">{row.posts}</TableCell>
+                <TableCell align='left'>{row.username}</TableCell>
+                <TableCell align='left'>{row.country}</TableCell>
+                <TableCell align='left'>{row.name}</TableCell>
+                <TableCell align='left'>{row.lastPayments}</TableCell>
+                <TableCell align='left'>{row.posts}</TableCell>
               </TableRow>
             ))}
           </TableBody>
