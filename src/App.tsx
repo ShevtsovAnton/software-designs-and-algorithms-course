@@ -16,7 +16,7 @@ import styles from './App.module.scss';
 const mockedData: Row[] = rows.data;
 
 export const App: FC = () => {
-  const [data, setData] = useState<Row[]>(undefined);
+  const [data, setData] = useState<Row[]>([]);
   const [store, dispatch] = useReducer(reducer, initialState);
 
   const applyDataHandler = dataHandler(store);
