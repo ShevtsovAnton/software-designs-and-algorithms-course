@@ -1,11 +1,14 @@
 import { FC } from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import { StyledEngineProvider } from '@mui/material/styles';
 
 import { Image, User, Account } from '../types';
 import { Table, Filters, Sort, Search, Row } from './components';
 import { getImages, getUsers, getAccounts } from './mocks/api';
 import rows from './mocks/rows.json';
+import {dataConverter} from './helpers/data-converter';
+import {dataHandler} from './helpers/data-handler';
+import { reducer, initialState } from './store/store'; 
 
 import styles from './App.module.scss';
 
@@ -13,7 +16,10 @@ import styles from './App.module.scss';
 const mockedData: Row[] = rows.data;
 
 export const App: FC = () => {
-  const [data, setData] = useState<Row[]>(undefined);
+  const [data, setData] = useState<Row[]>([]);
+  const [store, dispatch] = useReducer(reducer, initialState);
+
+  const applyDataHandler = dataHandler(store);
 
   useEffect(() => {
     // fetching data from API
@@ -21,8 +27,11 @@ export const App: FC = () => {
       getImages(),
       getUsers(),
       getAccounts(),
-    ]).then(([images, users, accounts]: [Image[], User[], Account[]]) =>
+    ]).then(([images, users, accounts]: [Image[], User[], Account[]]) => {
       console.log(images, users, accounts)
+      setData(dataConverter(users, accounts, images))
+    }
+
     );
   }, []);
 
@@ -31,12 +40,12 @@ export const App: FC = () => {
       <div className="App">
         <div className={styles.container}>
           <div className={styles.sortFilterContainer}>
-            <Filters />
-            <Sort />
+            <Filters store={store} dispatch={dispatch} />
+            <Sort dispatch={dispatch} />
           </div>
-          <Search />
+          <Search store={store} dispatch={dispatch} />
         </div>
-        <Table rows={data || mockedData} />
+        <Table rows={applyDataHandler(data)} />
       </div>
     </StyledEngineProvider>
   );
