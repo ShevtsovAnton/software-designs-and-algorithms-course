@@ -1,10 +1,11 @@
-import { ShipmentInfo } from './types';
+import { ShipmentInfo, Shipper } from './types';
+import { AirEastShipper } from './shippers/airEastShipper';
+import { ChicagoSprintShipper } from './shippers/chicagoSprintShipper';
+import { PacificParcelShipper } from './shippers/pacificParcelShipper';
 
 let shipmentId = 1;
 
 export class Shipment {
-    private static rate = 0.39;
-
     private shipmentId: number;
     private weight: number;
     private cost: number;
@@ -12,6 +13,7 @@ export class Shipment {
     private fromZipCode: string;
     private toAddress: string;
     private toZipCode: string;
+    private shipper: Shipper;
 
     constructor({
         shipmentId,
@@ -23,11 +25,12 @@ export class Shipment {
     }: ShipmentInfo) {
         this.shipmentId = shipmentId || Shipment.getShipmentId();
         this.weight = weight;
-        this.cost = Shipment.getCost(weight);
         this.fromAddress = fromAddress;
         this.fromZipCode = fromZipCode;
         this.toAddress = toAddress;
         this.toZipCode = toZipCode;
+        this.shipper = Shipment.determineShipper(this.fromZipCode);
+        this.cost = this.shipper.getCost(this);
     }
 
     private static getShipmentId(): number {
@@ -36,9 +39,28 @@ export class Shipment {
         return id;
     }
 
-    private static getCost(weight: number): number {
-        return +(weight * Shipment.rate).toFixed(2);
+    private static determineShipper(fromZipCode: string): Shipper {
+        switch (fromZipCode[0]) {
+            case '4':
+            case '5':
+            case '6':
+                return new ChicagoSprintShipper();
+            case '7':
+            case '8':
+            case '9':
+                return new PacificParcelShipper();
+            default:
+                return new AirEastShipper();
+        }
     }
+    public getWeight(): number {
+        return this.weight;
+    }
+
+    public setWeight(weight: number): void {
+        this.weight = weight;
+    }
+
 
     public getFromAddress(): string {
         return this.fromAddress;
