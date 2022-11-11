@@ -1,4 +1,4 @@
-import { Shipment } from './Shipment';
+import { Shipment } from './shipments/shipment';
 export interface ShipmentInfo {
     shipmentId: number;
     weight: number;
@@ -10,4 +10,10 @@ export interface ShipmentInfo {
 
 export interface Shipper {
     getCost: (shipment: Shipment) => number;
+}
+
+export enum ShipmentType {
+    LETTER = 'Letter',
+    PACKAGE = 'Package',
+    OVERSIZED = 'Oversized',
 }

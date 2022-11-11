@@ -1,11 +1,11 @@
-import { ShipmentInfo, Shipper } from './types';
-import { AirEastShipper } from './shippers/airEastShipper';
-import { ChicagoSprintShipper } from './shippers/chicagoSprintShipper';
-import { PacificParcelShipper } from './shippers/pacificParcelShipper';
+import { ShipmentInfo, Shipper, ShipmentType } from '../types';
+import { AirEastShipper } from '../shippers/airEastShipper';
+import { ChicagoSprintShipper } from '../shippers/chicagoSprintShipper';
+import { PacificParcelShipper } from '../shippers/pacificParcelShipper';
 
 let shipmentId = 1;
 
-export class Shipment {
+export abstract class Shipment {
     private shipmentId: number;
     private weight: number;
     private cost: number;
@@ -14,6 +14,7 @@ export class Shipment {
     private toAddress: string;
     private toZipCode: string;
     private shipper: Shipper;
+    protected type: ShipmentType;
 
     constructor({
         shipmentId,
@@ -29,6 +30,8 @@ export class Shipment {
         this.fromZipCode = fromZipCode;
         this.toAddress = toAddress;
         this.toZipCode = toZipCode;
+        this.type = ShipmentType.LETTER;
+        this.postInitialize();
         this.shipper = Shipment.determineShipper(this.fromZipCode);
         this.cost = this.shipper.getCost(this);
     }
@@ -97,4 +100,10 @@ export class Shipment {
     public ship(): string {
         return `Shipment with the ID ${this.shipmentId} will be picked up from ${this.fromAddress} ${this.fromZipCode} and shipped to ${this.toAddress} ${this.toZipCode}\nCost = ${this.cost}`;
     }
+
+    public getType() {
+        return this.type;
+    }
+
+    protected abstract postInitialize(): void;
 }
