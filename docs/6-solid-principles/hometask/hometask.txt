@@ -1,0 +1,52 @@
+Examples
+Single Responsibility Principle	
+    https://github.com/tradingview/lightweight-charts/blob/master/src/formatters/date-time-formatter.ts
+    line 18-33, 
+    class DateTimeFormatter is responsible for presenting date time string. 
+    
+Open / Closed Principle	
+    https://github.com/tradingview/lightweight-charts/blob/master/src/formatters/price-formatter.ts
+    line 35
+    PricedFormatter is closed for modification, but open for extension. (class PercentageFormatter - extends base PriceFormatter class to reimplement format() method)
+    
+Liskov Substitution Principle
+    https://github.com/tradingview/lightweight-charts/blob/master/src/formatters/percentage-formatter.ts
+    line 3-11
+    class PercentageFormatter - PriceFormatter can be swapped with PercentageFormatter. 
+
+Interface Segregation Principle
+    https://github.com/tradingview/lightweight-charts/blob/master/src/views/pane/iupdatable-pane-view.ts
+    line: 5-7, 
+    interface IUpdatablePaneView extends IPaneView and adds update method. 
+
+Dependency Inversion Principle	
+    https://github.com/tradingview/lightweight-charts/blob/master/src/gui/mouse-event-handler.ts
+    line: 158-162, 
+    class MouseEventHandler depends on abstractions MouseEventHandlers, MouseEventHandlerOptions
+
+
+Violaitions:
+Single Responsibility Principle	
+    https://github.com/tradingview/lightweight-charts/blob/master/src/model/chart-model.ts
+    line: 337-932, 
+    too many methods
+
+Open / Closed Principle
+    https://github.com/tradingview/lightweight-charts/blob/master/src/model/pane.ts
+    line: 81-94
+    switch statement will need to be modified if other variants are to be added.
+
+Liskov Substitution Principle
+    https://github.com/tradingview/lightweight-charts/blob/master/src/api/candlestick-series-api.ts
+    line: 8-13
+    class CandlestickSeriesApi takes more specific arguments in applyOptions
+
+Interface Segregation Principle
+    https://github.com/tradingview/lightweight-charts/blob/master/src/gui/mouse-event-handler.ts
+    line: 13-41
+    MouseEventHandlers could be split into two or more interfaces 
+
+Dependency Inversion Principle
+    https://github.com/tradingview/lightweight-charts/blob/master/src/formatters/date-time-formatter.ts 
+    line: 18-33
+    class DateTimeFormatter depends on DateFormatter and TimeFormatter instead of an interface. 
