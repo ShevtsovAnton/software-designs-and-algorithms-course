@@ -20,16 +20,17 @@ const edges = [
 ];
 const graph: WeightedGraph = new WeightedGraph();
 
-vertices.forEach(vertice => graph.addVertex(vertice.point));
+
+vertices.forEach(vertice => graph.addVertex(vertice));
 edges.forEach(edge => graph.addEdge(edge.from, edge.to, edge.weight));
 
 const dijkstra: Dijkstra = new Dijkstra(graph);
 
-console.log(dijkstra.findShortestPath(vertices[3], vertices[2])); // { path: ['4', '1', '3'], distance: 7 }
-console.log(dijkstra.findShortestPath(vertices[0], vertices[4])); // { path: [], distance: Infinity }
-console.log(dijkstra.findShortestPath(vertices[0], vertices[0])); // { path: ['1'], distance: 0 }
+console.log(dijkstra.findShortestPath(vertices[3].point, vertices[2].point)); // { path: ['4', '1', '3'], distance: 7 }
+console.log(dijkstra.findShortestPath(vertices[0].point, vertices[4].point)); // { path: [], distance: Infinity }
+console.log(dijkstra.findShortestPath(vertices[0].point, vertices[0].point)); // { path: ['1'], distance: 0 }
 
-console.log(dijkstra.findAllShortestPaths(vertices[3]));
+console.log(dijkstra.findAllShortestPaths(vertices[3].point));
    /*
  {
    '1': { path: ['4', '1'], distance: 3 },

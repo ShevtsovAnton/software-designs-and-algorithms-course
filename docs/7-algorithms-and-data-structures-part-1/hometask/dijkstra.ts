@@ -1,59 +1,102 @@
 import { Vertex } from "./vertex";
 import { iPath, Path } from "./path";
-import { WeightedGraph } from "./weighted-graph";
+import { WeightedGraph, iVertexEdge } from "./weighted-graph";
 
 export interface iDijkstra<T> {
     findShortestPath(vertex1: T, vertex2: T): iPath;
-    findAllShortestPaths(vertex: T): iPath[];
+    findAllShortestPaths(vertex: T): Record<string, iPath>;
 }
-
-export class Dijkstra implements iDijkstra<Vertex> {
-
-    public graph: WeightedGraph
+export class Dijkstra implements iDijkstra<string> {
+    public graph: WeightedGraph;
 
     constructor(graph: WeightedGraph) {
         this.graph = graph;
     }
 
-    public findShortestPath(vertex1: Vertex, vertex2: Vertex): iPath {
+    private setDefaultDistances(vertexes: string[], currentVertex: string): Record<string, number> {
+        return vertexes.reduce((acc: Record<string, number>, cur) => {
+            acc[cur] = cur === currentVertex ? 0 : Infinity;
+            return acc;
+        }, {});
+    }
 
-        const start = vertex1.point;
-        const finish = vertex2.point;
-        let distances = 0;
-        const vertexes: string[] = [];
-        const depthFirstSearch = (graph: any, start: any) => {
-            if ((graph[finish].length === 0) || (graph[finish].length === 0)) return distances = Infinity;
-            vertexes.push(start.toString());
-            if (start === finish) return 0;
-            if (graph[start].filter((val: string) => Object.keys(val).toString() === finish.toString()).length === 0) {
-                const pathInfo = graph[start].reduce((acc: string[], val: string) => acc > Object['values'](val) ? acc : Object['values'](val));
-                const point = Object.keys(pathInfo);
-                const distance = Object['values'](pathInfo);
-                distances += Number(distance);
-                depthFirstSearch(graph, point);
-            } else {
-                const pathInfo = graph[start].filter((val: string) => Object.keys(val).toString() === finish.toString())[0];
-                const point = Object.keys(pathInfo);
-                const distance = Object['values'](pathInfo);
-                distances += Number(distance);
-                vertexes.push(point.toString());
-                return distances;
+    private getPath(parents: Record<string, string | null>, startVertex: string, endVertex: string): string[] {
+        let currentVertex = endVertex;
+        let path = [endVertex];
+        if (startVertex === endVertex) {
+            return [startVertex];
+        }
+
+        if (!parents[currentVertex]) {
+            return [];
+        }
+
+        while (currentVertex !== startVertex) {
+            if (!parents[currentVertex]) {
+                break;
+            }
+            currentVertex = parents[currentVertex]!;
+            path.push(currentVertex);
+        }
+        return path.reverse();
+    }
+
+    public findShortestPath(startVertex: string, endVertex: string): iPath {
+        const vertexesNames: string[] = this.graph.getVertexesPoints();
+
+        let currentVertex: string = startVertex;
+        let currentDistance: number = 0;
+        let visited: string[] = [];
+
+        let parents: Record<string, string | null> = { [endVertex]: null };
+
+        let distances: Record<string, number> = this.setDefaultDistances(vertexesNames, currentVertex);
+        while (visited.length < vertexesNames.length) {
+            let currentVertexEdges: iVertexEdge[] = this.graph.getEdges(currentVertex)!;
+            let distancesFromCurrentVertex: Record<string, number> = currentVertexEdges.reduce(
+                (acc: Record<string, number>, edge: iVertexEdge) => {
+                    if (currentDistance + edge.weight < distances[edge.to.point]) {
+                        parents[edge.to.point] = currentVertex;
+                        acc[edge.to.point] = currentDistance + edge.weight;
+
+                    }
+
+                    return acc;
+                },
+                {}
+            );
+
+            Object.assign(distances, distancesFromCurrentVertex);
+
+            visited.push(currentVertex);
+
+            if (visited.length !== vertexesNames.length) {
+                const nextMinVertex = Object.keys(distances)
+                    .filter((key) => !visited.includes(key))
+                    .reduce((key, v) => (distances[v] < distances[key] ? v : key));
+                currentVertex = nextMinVertex;
+                if (distances[currentVertex] !== Infinity) {
+                    currentDistance = distances[currentVertex]
+                }
             }
         }
 
-        depthFirstSearch(this.graph.graph, start);
-        return new Path(vertexes, distances);
 
+        return {
+            path: this.getPath(parents, startVertex, endVertex),
+            distance: distances[endVertex],
+        };
     }
 
+    public findAllShortestPaths(vertex: string): Record<string, Path> {
+        let vertexes: Map<string, iVertexEdge[]> = this.graph.getVertexes();
 
-    public findAllShortestPaths(vertex: Vertex): iPath[] {
-
-        const allPaths = (start: Vertex) => (finish: Vertex) => {
-            return this.findShortestPath(start, finish);
-        }
-        const fromPoint = allPaths(vertex);
-
-        return Object.keys(this.graph.graph).map(point => fromPoint(new Vertex(point)));
+        return Array.from(vertexes.keys()).reduce((acc: Record<string, Path>, currentVertex) => {
+            if (currentVertex !== vertex) {
+                acc[currentVertex] = this.findShortestPath(vertex, currentVertex);
+            }
+            return acc;
+        }, {});
     }
+
 }

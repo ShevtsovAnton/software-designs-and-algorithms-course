@@ -1,26 +1,35 @@
 import { Vertex } from './vertex'
 
 export interface iWeightedGraph<T> {
-    addVertex(key: string): void;
+    addVertex(vertex: T): void;
     addEdge(vertex1: T, vertex2: T, weight: number): void;
 }
-
+export interface iVertexEdge {
+    to: Vertex;
+    weight: number;
+}
 export class WeightedGraph implements iWeightedGraph<Vertex> {
 
-    public graph: any;
+    private vertexes: Map<string, iVertexEdge[]> = new Map();
 
-    constructor() {
-        this.graph = {};
+    public addVertex(vertex: Vertex) {
+        this.vertexes.set(vertex.point, []);
     }
 
-    public addVertex(key: string): void {
-        this.graph[key] = [];
+    public getVertexes(): Map<string, iVertexEdge[]> {
+        return this.vertexes;
     }
 
-    public addEdge(vertex1: Vertex, vertex2: Vertex, weight: number): void {
-        const from = vertex1.point;
-        const to = vertex2.point;
-        this.graph[from].push({ [to]: weight });
-        this.graph[to].push({ [from]: weight });
+    public getVertexesPoints(): string[] {
+        return Array.from(this.getVertexes().entries()).map((e) => e[0]);
+    }
+
+    public addEdge(vertex1: Vertex, vertex2: Vertex, weight: number) {
+        this.getEdges(vertex1.point)?.push({ to: vertex2, weight });
+        this.getEdges(vertex2.point)?.push({ to: vertex1, weight });
+    }
+
+   public getEdges(vertexName: string): iVertexEdge[] | null {
+        return this.vertexes.get(vertexName) || null;
     }
 }   
